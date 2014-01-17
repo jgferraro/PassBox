@@ -1,0 +1,13 @@
+PassBox
+
+Created by (Alphabetical by Last Name):
+	Jesse Ferraro
+	Alexander Haas
+	Jonathan Pecoraro
+
+- User provides passwork type input field
+- Plugin converts password field into a hidden password field, creates text input in its place
+- Password input and text input should contain the same value at any given time
+- Monitor key-up event to create a timer for when character should be masked (possible user parameter)
+	- Timer should reset when a new valid character is entered
+- Monitor change/blur event to mask any un-masked characters
