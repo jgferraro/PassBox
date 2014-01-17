@@ -7,10 +7,14 @@
 <body>
 	<h1>PassBox Test Home Page</h1>
 	<form>
-		<input type="password" name="oldPassword" />
-		<input type="password" name="newPassword" />
+		<input type="password" name="oldPassword" class="password" />
+		<input type="text" name="newPassword" class="password" />
+		<input name="newestPassword" class="password" />
 	</form>
 <script src="lib/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="js/passBox.js" type="text/javascript"></script>
+<script>
+	$('.password').mask();
+</script>
 </body>
 </html>
