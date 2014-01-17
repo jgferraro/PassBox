@@ -5,7 +5,7 @@ Created by (Alphabetical by Last Name):
 	Alexander Haas
 	Jonathan Pecoraro
 
-- User provides passwork type input field
+- User provides password or text type input field
 - Plugin converts password field into a hidden password field, creates text input in its place
 - Password input and text input should contain the same value at any given time
 - Monitor key-up event to create a timer for when character should be masked (possible user parameter)
@@ -15,10 +15,15 @@ Created by (Alphabetical by Last Name):
 
 
 Function Breakdown
-- Core Password Masking Function
+- Core Password Masking Function - Called by .mask()
+- Valid character function (excluding special keys. ie. CTRL, ALT, SHIFT, BACKSPACE)
+- Mask character (Includes Reset timer)
+- Get character position function
+- onChange function
+- keyUp function
+- startTimer function
+- resetTimer function
+
+Event Breakdown
 - Key-up event
 - On change event
-- Valid character function (excluding special keys. ie. CTRL, ALT, SHIFT, BACKSPACE)
-- Call by .mask()
-- Reset timer function
-- Get character position function
