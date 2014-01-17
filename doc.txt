@@ -11,3 +11,14 @@ Created by (Alphabetical by Last Name):
 - Monitor key-up event to create a timer for when character should be masked (possible user parameter)
 	- Timer should reset when a new valid character is entered
 - Monitor change/blur event to mask any un-masked characters
+- Needs to work with multiple elements being passed in
+
+
+Function Breakdown
+- Core Password Masking Function
+- Key-up event
+- On change event
+- Valid character function (excluding special keys. ie. CTRL, ALT, SHIFT, BACKSPACE)
+- Call by .mask()
+- Reset timer function
+- Get character position function
