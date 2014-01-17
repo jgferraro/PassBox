@@ -1,21 +1,21 @@
 (function($) {
 	$.fn.mask = function(options) {
 		var settings = $.extend({
-			duration: 		2000, 		// Show plain-text character for 2 seconds by default
-			maskCharacter:  '\u25CF' 	// Bullet character
+			duration:		2000,		// Show plain-text character for 2 seconds by default
+			maskCharacter:	'\u25CF'	// Bullet character
 		}, options);
 		
-		this.each(function() { // loop through all matching selectors 
+		this.each(function() { // Loop through all matching selectors 
 			var $this = $(this);
 			var $textField;
 			var $passwordField;
 			
 			// Set password and text fields
-			if ($this.attr('type') === 'password') {
+			if ($this.prop('type') === 'password') {
 				$passwordField = $this;
 				$textField = $('<input type="text" />');
 			}
-			else {
+			else if ($this.prop('type') === 'text') {
 				$passwordField = $('<input type="password" />').attr('name', $this.attr('name'));
 				$textField = $this.removeAttr('name');
 			}
