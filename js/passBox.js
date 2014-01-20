@@ -50,16 +50,20 @@
 		}
 		
 		function onKeyUp(e) {
-			var $this = $(this);
-			var operation = null;
-			startTimer(function() {
-				maskInput($this, operation);
-			});
+			if (isValidCharacter(e.keyCode)) {
+				var $this = $(this);
+				var operation = null;
+				startTimer(function() {
+					maskInput($this, operation);
+				});
+			}
 		}
 
 		function onKeyDown(e) {
-			stopTimer();
-			maskInput(this);
+			if (isValidCharacter(e.keyCode)) {
+				stopTimer();
+				maskInput(this);
+			}
 		}
 		
 		function onChange(e) {
@@ -68,7 +72,7 @@
 		}
 		
 		function isValidCharacter(character) {
-			// TODO: implement function
+			return (!/^(9|1[678]|224|3[789]|40)$/.test(character.toString()));
 		}
 		
 		function getCursorPosition() {
