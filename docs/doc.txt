@@ -27,3 +27,20 @@ Function Breakdown
 Event Breakdown
 - Key-up event
 - On change event
+
+Not Valid Characters:
+8 (BACKSPACE)
+13 (ENTER)
+16 (SHIFT)
+17 (CTRL)
+18 (ALT)
+20 (CAPS)
+33 (PG UP)
+34 (PG DOWN)
+36 (HOME) Maybe?
+35 (END) Maybe?
+38 (UP ARROW)
+40 (DOWN ARROW)
+45 (INSERT)
+91 (Windows Key)
+93 (Keyboard Right Click Shortcut Thingy)

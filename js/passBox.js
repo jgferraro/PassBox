@@ -4,6 +4,7 @@
 			duration:		2000,		// Show plain-text character for 2 seconds by default
 			maskCharacter:	'\u25CF'	// Bullet character
 		}, options);
+		var notValidCharacters = [8,13,16,17,18,20,33,34,35,36,38,40,45,91,93];
 
 		// Set global timer variable
 		var timer = null;
@@ -44,7 +45,7 @@
 			var textValue = $textField.val();
 			var regExpMask = new RegExp('[^' + settings.maskCharacter + ']', 'g'); // using RegExp for IE 7 compatibility
 
-			if  (operation == null) {
+			if (operation == null) {
 				$textField.val(textValue.replace(regExpMask, settings.maskCharacter));
 			}
 		}
@@ -72,7 +73,12 @@
 		}
 		
 		function isValidCharacter(character) {
-			return (!/^(9|1[678]|224|3[789]|40)$/.test(character.toString()));
+			// Check to see if input value warrants masking
+			if ($.inArray(character, notValidCharacters) === 0) {
+				return false;
+			} else {
+				return true;
+			}
 		}
 		
 		function getCursorPosition() {
