@@ -74,7 +74,7 @@
 		
 		function isValidCharacter(character) {
 			// Check to see if input value warrants masking
-			if ($.inArray(character, notValidCharacters) === 0) {
+			if ($.inArray(character, notValidCharacters) >= 0) {
 				return false;
 			} else {
 				return true;
