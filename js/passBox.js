@@ -53,6 +53,7 @@
 		function onKeyUp(e) {
 			if (isValidCharacter(e.keyCode)) {
 				var $this = $(this);
+				getCursorPosition($this);
 				var operation = null;
 				startTimer(function() {
 					maskInput($this, operation);
@@ -62,6 +63,8 @@
 
 		function onKeyDown(e) {
 			if (isValidCharacter(e.keyCode)) {
+				var $this = $(this);
+				getCursorPosition($this);
 				stopTimer();
 				maskInput(this);
 			}
@@ -81,8 +84,22 @@
 			}
 		}
 		
-		function getCursorPosition() {
-			// TODO: implement function
+		function getCursorPosition(input) {
+			// Borrowed from Maximilian Ruta (http://stackoverflow.com/questions/1891444/how-can-i-get-cursor-position-in-a-textarea)
+			var element = input.get(0);
+			var position = 0;
+			if ('selectionStart' in element) {
+				// IE9+ and good browsers 
+				position = 'if' + element.selectionStart;
+			} else if ('selection' in document) {
+				// IE8 and lower
+				element.focus();
+				var Sel = document.selection.createRange();
+				var SelLength = document.selection.createRange().text.length;
+				Sel.moveStart('character', - element.value.length);
+				position = Sel.text.length - SelLength;
+			}
+			return position;
 		}
 
 		function startTimer(func) {
