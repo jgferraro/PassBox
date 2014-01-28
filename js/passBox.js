@@ -4,11 +4,11 @@
 			duration:		2000,		// Show plain-text character for 2 seconds by default
 			maskCharacter:	'\u25CF'	// Bullet character
 		}, options);
-		var notValidCharacters = [8,13,16,17,18,20,33,34,35,36,38,40,45,91,93];
 
 		// Set global timer variable
 		var timer = null;
-		
+		var notValidCharacters = [8,13,16,17,18,20,33,34,35,36,38,40,45,91,93];
+
 		this.each(function() { // Loop through all matching selectors 
 			var $this = $(this);
 			var $textField;
@@ -41,20 +41,27 @@
 		*/
 		function maskInput(target, operation) {
 			var $textField = $(target);
-			var $passwordFiled = $textField.data('passwordField');
+			var $passwordField = $textField.data('passwordField');
 			var textValue = $textField.val();
 			var regExpMask = new RegExp('[^' + settings.maskCharacter + ']', 'g'); // using RegExp for IE 7 compatibility
+			var inputtedCharacter = textValue.match(regExpMask, settings.maskCharacter); // Get most recent character
+			// Update password field
+			if (!$passwordField.val()) {
+				$passwordField.val(inputtedCharacter);
+			} else {
+				$passwordField.val($passwordField.val() + inputtedCharacter);
+			}
 
-			if (operation == null) {
-				$textField.val(textValue.replace(regExpMask, settings.maskCharacter));
+			if (operation == null) { // Look into this with Jon
+				$textField.val(textValue.replace(regExpMask, settings.maskCharacter)); // Mask un-hidden character
 			}
 		}
 		
 		function onKeyUp(e) {
 			if (isValidCharacter(e.keyCode)) {
 				var $this = $(this);
-				getCursorPosition($this);
 				var operation = null;
+				getCursorPosition($this);
 				startTimer(function() {
 					maskInput($this, operation);
 				});
@@ -66,7 +73,7 @@
 				var $this = $(this);
 				getCursorPosition($this);
 				stopTimer();
-				maskInput(this);
+				maskInput($this);
 			}
 		}
 		
