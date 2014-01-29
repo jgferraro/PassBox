@@ -7,7 +7,6 @@
 
 		// Set global timer variable
 		var timer = null;
-		var notValidCharacters = [8,13,16,17,18,20,33,34,35,36,38,40,45,91,93];
 
 		this.each(function() { // Loop through all matching selectors 
 			var $this = $(this);
@@ -39,12 +38,13 @@
 				target: The text input element to mask
 				operation: The operation that was executed: add, remove, or null
 		*/
-		function maskInput(target, operation) {
+		function maskInput(target, operation, cursorPosition) {
 			var $textField = $(target);
 			var $passwordField = $textField.data('passwordField');
 			var textValue = $textField.val();
 			var regExpMask = new RegExp('[^' + settings.maskCharacter + ']', 'g'); // using RegExp for IE 7 compatibility
-			var inputtedCharacter = textValue.match(regExpMask, settings.maskCharacter); // Get most recent character
+			var inputtedCharacter = textValue.match(regExpMask, settings.maskCharacter); // Get most un-hidden character
+
 			// Update password field
 			if (!$passwordField.val()) {
 				$passwordField.val(inputtedCharacter);
@@ -52,18 +52,27 @@
 				$passwordField.val($passwordField.val() + inputtedCharacter);
 			}
 
-			if (operation == null) { // Look into this with Jon
+			if (operation === 'add') {
 				$textField.val(textValue.replace(regExpMask, settings.maskCharacter)); // Mask un-hidden character
+			} else if (operation === 'remove') {
+
 			}
 		}
 		
 		function onKeyUp(e) {
 			if (isValidCharacter(e.keyCode)) {
 				var $this = $(this);
-				var operation = null;
-				getCursorPosition($this);
+				var cposition = getCursorPosition($this);
+				var backspace = 8;
+				var operation;
+
+				if (e.keyCode === backspace) {
+					operation = 'remove';
+				} else {
+					operation = 'add';
+				}
 				startTimer(function() {
-					maskInput($this, operation);
+					maskInput($this, operation, cposition);
 				});
 			}
 		}
@@ -83,10 +92,13 @@
 		}
 		
 		function isValidCharacter(character) {
+			var notValidCharacters = [13,16,17,18,20,33,34,35,36,38,40,45,91,93];
 			// Check to see if input value warrants masking
 			if ($.inArray(character, notValidCharacters) >= 0) {
+				// Not Valid Characters
 				return false;
 			} else {
+				// Valid Characters
 				return true;
 			}
 		}
@@ -97,7 +109,7 @@
 			var position = 0;
 			if ('selectionStart' in element) {
 				// IE9+ and good browsers 
-				position = 'if' + element.selectionStart;
+				position = element.selectionStart;
 			} else if ('selection' in document) {
 				// IE8 and lower
 				element.focus();
