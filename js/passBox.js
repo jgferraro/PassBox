@@ -8,7 +8,7 @@
 		// Set global timer variable
 		var timer = null;
 
-		this.each(function() { // Loop through all matching selectors 
+		$(this).each(function() { // Loop through all matching selectors 
 			var $this = $(this);
 			var $textField;
 
@@ -29,6 +29,7 @@
 			
 			// Add event listeners
 			$textField.on('keyup', onKeyUp);
+			$textField.on('keydown', onKeyDown);
 			$textField.on('change', onChange);
 		});
 		
@@ -44,21 +45,21 @@
 			var regExpMask = new RegExp('[^' + settings.maskCharacter + ']', 'g'); // using RegExp for IE 7 compatibility
 			var inputtedCharacter = textValue.match(regExpMask, settings.maskCharacter); // Get most un-hidden character
 
-			// Update password field
-			if (!$passwordField.val()) {
-				$passwordField.val(inputtedCharacter);
-			} else {
-				$passwordField.val($passwordField.val() + inputtedCharacter);
-			}
-
-			if ((operation !== 'add') || (cursorPosition !== 1) && (inputtedCharacter.length > 1)) {
-				if (operation === 'add') {
-					$textField.val(textValue.replace(inputtedCharacter[0], settings.maskCharacter)); // Mask un-hidden character
-				} else if (operation === 'remove') {
-
+			if ((operation === 'add') && (inputtedCharacter !== null)) {
+				// Update password field
+				if (!$passwordField.val()) {
+					$passwordField.val(inputtedCharacter);
 				} else {
-					$textField.val(textValue.replace(regExpMask, settings.maskCharacter));
+					var currentPassword = $passwordField.val();
+					var passwordArray = currentPassword.split('');
+					passwordArray.splice(cursorPosition - 1, 0, inputtedCharacter);
+					$passwordField.val(passwordArray.join(''));
 				}
+				$textField.val(textValue.replace(inputtedCharacter[0], settings.maskCharacter)); // Mask un-hidden character
+			} else if (operation === 'remove') {
+
+			} else {
+				$textField.val(textValue.replace(regExpMask, settings.maskCharacter));
 			}
 		}
 		
@@ -75,19 +76,30 @@
 					operation = 'add';
 				}
 
-				maskInput($this, operation);
-				stopTimer();
-
 				startTimer(function() {
-					operation = 'timeout';
+					operation = 'add';
 					maskInput($this, operation, cPosition);
+					$this.caretTo(cPosition); // Move caret back to where it was
 				});
+			}
+		}
+
+		function onKeyDown(e) {
+			if (isValidCharacter(e.keyCode)) {
+				var $this = $(this);
+				var cPosition = getCursorPosition($this);
+				operation = 'add';
+				
+				getCursorPosition($this);
+				stopTimer();
+				maskInput($this, operation, cPosition);
+				$this.caretTo(cPosition); // Move caret back to where it was
 			}
 		}
 		
 		function onChange() {
 			var $this = $(this);
-			operation = null;
+			operation = 'add';
 			stopTimer();
 			maskInput($this, operation);
 		}
@@ -129,5 +141,34 @@
 		function stopTimer() {
 			clearTimeout(timer);
 		}
+
+		// Caret positioning written by DrPheltRight (https://gist.github.com/DrPheltRight/1007907)
+		$.fn.caretTo = function (index, offset) {
+			return this.queue(function (next) {
+				if (isNaN(index)) {
+					var i = $(this).val().indexOf(index);
+					if (offset === true) {
+						i += index.length;
+					} else if (offset) {
+						i += offset;
+					}
+					$.caretTo(this, i);
+				} else {
+					$.caretTo(this, index);
+				}
+				next();
+			});
+		};
+
+		$.caretTo = function (el, index) {
+			if (el.createTextRange) { 
+				var range = el.createTextRange();
+				range.move("character", index);
+				range.select(); 
+			} else if (el.selectionStart != null) {
+				el.focus(); 
+				el.setSelectionRange(index, index);
+			}
+		};
 	}
 }(jQuery));
