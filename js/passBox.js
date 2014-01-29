@@ -29,14 +29,13 @@
 			
 			// Add event listeners
 			$textField.on('keyup', onKeyUp);
-			$textField.on('keydown', onKeyDown);
 			$textField.on('change', onChange);
 		});
 		
 		/*
 			params:
 				target: The text input element to mask
-				operation: The operation that was executed: add, remove, or null
+				operation: The operation that was executed: add, remove, timeout, or null
 		*/
 		function maskInput(target, operation, cursorPosition) {
 			var $textField = $(target);
@@ -52,17 +51,21 @@
 				$passwordField.val($passwordField.val() + inputtedCharacter);
 			}
 
-			if (operation === 'add') {
-				$textField.val(textValue.replace(regExpMask, settings.maskCharacter)); // Mask un-hidden character
-			} else if (operation === 'remove') {
+			if ((operation !== 'add') || (cursorPosition !== 1) && (inputtedCharacter.length > 1)) {
+				if (operation === 'add') {
+					$textField.val(textValue.replace(inputtedCharacter[0], settings.maskCharacter)); // Mask un-hidden character
+				} else if (operation === 'remove') {
 
+				} else {
+					$textField.val(textValue.replace(regExpMask, settings.maskCharacter));
+				}
 			}
 		}
 		
 		function onKeyUp(e) {
 			if (isValidCharacter(e.keyCode)) {
 				var $this = $(this);
-				var cposition = getCursorPosition($this);
+				var cPosition = getCursorPosition($this);
 				var backspace = 8;
 				var operation;
 
@@ -71,34 +74,32 @@
 				} else {
 					operation = 'add';
 				}
+
+				maskInput($this, operation);
+				stopTimer();
+
 				startTimer(function() {
-					maskInput($this, operation, cposition);
+					operation = 'timeout';
+					maskInput($this, operation, cPosition);
 				});
 			}
 		}
-
-		function onKeyDown(e) {
-			if (isValidCharacter(e.keyCode)) {
-				var $this = $(this);
-				getCursorPosition($this);
-				stopTimer();
-				maskInput($this);
-			}
-		}
 		
-		function onChange(e) {
+		function onChange() {
+			var $this = $(this);
+			operation = null;
 			stopTimer();
-			maskInput(this);
+			maskInput($this, operation);
 		}
 		
 		function isValidCharacter(character) {
-			var notValidCharacters = [13,16,17,18,20,33,34,35,36,38,40,45,91,93];
+			var notValidCharacters = [9,13,16,17,18,20,33,34,35,36,37,38,39,40,45,91,93];
 			// Check to see if input value warrants masking
 			if ($.inArray(character, notValidCharacters) >= 0) {
-				// Not Valid Characters
+				// Not Valid Character
 				return false;
 			} else {
-				// Valid Characters
+				// Valid Character
 				return true;
 			}
 		}
