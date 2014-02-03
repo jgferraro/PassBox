@@ -90,7 +90,6 @@
 				var cPosition = getCursorPosition($this);
 				operation = 'add';
 				
-				getCursorPosition($this);
 				stopTimer();
 				maskInput($this, operation, cPosition);
 				$this.caretTo(cPosition); // Move caret back to where it was
@@ -99,9 +98,10 @@
 		
 		function onChange() {
 			var $this = $(this);
+			var cPosition = getCursorPosition($this);
 			operation = 'add';
 			stopTimer();
-			maskInput($this, operation);
+			maskInput($this, operation, cPosition);
 		}
 		
 		function isValidCharacter(character) {
